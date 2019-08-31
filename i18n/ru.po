@@ -20,17 +20,17 @@ msgstr ""
 #: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:88
 #, python-format
 msgid "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made."
-msgstr "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made."
+msgstr "Оплата %s %s по ссылке <a href='/mail/view?%s'>%s</a>  %s была сделанна."
 
 #. module: payslip_payment
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_batch_id
 msgid "Batch Name"
-msgstr "Batch Name"
+msgstr "Название Групповой Операции"
 
 #. module: payslip_payment
 #: model:ir.model,name:payslip_payment.model_hr_payslip_batchwise_register_payment_wizard
 msgid "Batch Wise Register Payment wizard"
-msgstr "Batch Wise Register Payment wizard"
+msgstr "Мастер Групповой Регистрации Платежей/Расходов Расчетного Листа"
 
 #. module: payslip_payment
 #: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_batchwise_sheet_register_payment_view_form
@@ -58,12 +58,12 @@ msgstr "Организация, связанная с этим журналом"
 #. module: payslip_payment
 #: model:ir.actions.server,name:payslip_payment.confirm_order_line_action_order
 msgid "Confirm Draft Payslips"
-msgstr "Confirm Draft Payslips"
+msgstr "Подтвердить Черновики Расчетныщх Листов"
 
 #. module: payslip_payment
 #: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_run_form_inherit
 msgid "Confirm Payslips"
-msgstr "Confirm Payslips"
+msgstr "Подтвердить Расчетные Листы"
 
 #. module: payslip_payment
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_create_uid
@@ -98,17 +98,17 @@ msgstr "Черновик Оплаты"
 #. module: payslip_payment
 #: model:ir.model.fields,field_description:payslip_payment.field_account_move_line_payslip_id
 msgid "Expense"
-msgstr "Expense"
+msgstr "Расход"
 
 #. module: payslip_payment
 #: model:ir.model,name:payslip_payment.model_hr_payslip_register_payment_wizard
 msgid "Expense Report Register Payment wizard"
-msgstr "Expense Report Register Payment wizard"
+msgstr "Мастер Регистрации Платежа/Расхода Расчетного Листа"
 
 #. module: payslip_payment
 #: model:ir.model.fields,help:payslip_payment.field_account_move_line_payslip_id
 msgid "Expense where the move line come from"
-msgstr "Expense where the move line come from"
+msgstr "Расход, исодя из линии движения средств"
 
 #. module: payslip_payment
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_hide_payment_method
@@ -194,7 +194,7 @@ msgstr "Записи расчётного листка"
 #: code:addons/payslip_payment/wizard/hr_payroll_batchwise_register_payment.py:53
 #, python-format
 msgid "Please Define Employee Private Address"
-msgstr "Please Define Employee Private Address"
+msgstr "Укажити домашний адресс сотрудника"
 
 #. module: payslip_payment
 #: model:ir.actions.act_window,name:payslip_payment.hr_payslip_batchwise_sheet_register_payment_wizard_action
@@ -216,7 +216,7 @@ msgstr "Технические поле используется, чтобы с�
 #: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:38
 #, python-format
 msgid "The payment amount must be strictly positive."
-msgstr "The payment amount must be strictly positive."
+msgstr "Сумма платежа может быть только положительной."
 
 #. module: payslip_payment
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_run_total_amount
