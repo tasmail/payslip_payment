@@ -39,8 +39,8 @@ class HrPayslip(models.Model):
         for slip in self:
             total_amount_new = 0.0
             for line in slip.line_ids:
-                if line.salary_rule_id.code == 'NET':
-                    total_amount_new+=line.total
+                if line.salary_rule_id.code == 'NET' or line.salary_rule_id.code == 'LOS':
+                    total_amount_new += line.total
             slip.total_amount = total_amount_new
 
     @api.multi
