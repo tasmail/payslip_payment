@@ -1,0 +1,232 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* payslip_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-31 10:51+0000\n"
+"PO-Revision-Date: 2019-08-31 10:51+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payslip_payment
+#: code:addons/payslip_payment/wizard/hr_payroll_batchwise_register_payment.py:77
+#: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:88
+#, python-format
+msgid "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made."
+msgstr "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made."
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_batch_id
+msgid "Batch Name"
+msgstr "Batch Name"
+
+#. module: payslip_payment
+#: model:ir.model,name:payslip_payment.model_hr_payslip_batchwise_register_payment_wizard
+msgid "Batch Wise Register Payment wizard"
+msgstr "Batch Wise Register Payment wizard"
+
+#. module: payslip_payment
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_batchwise_sheet_register_payment_view_form
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_sheet_register_payment_view_form
+msgid "Cancel"
+msgstr "Отмена"
+
+#. module: payslip_payment
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_run_form_inherit
+msgid "Close"
+msgstr "Закрыть"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_company_id
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_company_id
+msgid "Company"
+msgstr "Компания"
+
+#. module: payslip_payment
+#: model:ir.model.fields,help:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_company_id
+#: model:ir.model.fields,help:payslip_payment.field_hr_payslip_register_payment_wizard_company_id
+msgid "Company related to this journal"
+msgstr "Организация, связанная с этим журналом"
+
+#. module: payslip_payment
+#: model:ir.actions.server,name:payslip_payment.confirm_order_line_action_order
+msgid "Confirm Draft Payslips"
+msgstr "Confirm Draft Payslips"
+
+#. module: payslip_payment
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_run_form_inherit
+msgid "Confirm Payslips"
+msgstr "Confirm Payslips"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_create_uid
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_create_uid
+msgid "Created by"
+msgstr "Создал"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_create_date
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_create_date
+msgid "Created on"
+msgstr "Создано"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_currency_id
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_currency_id
+msgid "Currency"
+msgstr "Валюта"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_display_name
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_display_name
+msgid "Display Name"
+msgstr "Отображаемое имя"
+
+#. module: payslip_payment
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_batchwise_sheet_register_payment_view_form
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_sheet_register_payment_view_form
+msgid "Draft Payment"
+msgstr "Черновик Оплаты"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_account_move_line_payslip_id
+msgid "Expense"
+msgstr "Expense"
+
+#. module: payslip_payment
+#: model:ir.model,name:payslip_payment.model_hr_payslip_register_payment_wizard
+msgid "Expense Report Register Payment wizard"
+msgstr "Expense Report Register Payment wizard"
+
+#. module: payslip_payment
+#: model:ir.model.fields,help:payslip_payment.field_account_move_line_payslip_id
+msgid "Expense where the move line come from"
+msgstr "Expense where the move line come from"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_hide_payment_method
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_hide_payment_method
+msgid "Hide payment method"
+msgstr "Скрыть метод платежа"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_id
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_id
+msgid "ID"
+msgstr "ID"
+
+#. module: payslip_payment
+#: model:ir.model,name:payslip_payment.model_account_move_line
+msgid "Journal Item"
+msgstr "Элемент журнала"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard___last_update
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard___last_update
+msgid "Last Modified on"
+msgstr "Последний раз изменено"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_write_uid
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_write_uid
+msgid "Last Updated by"
+msgstr "Последний раз обновил"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_write_date
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_write_date
+msgid "Last Updated on"
+msgstr "Последний раз обновлено"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_communication
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_communication
+msgid "Memo"
+msgstr "Памятка"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_partner_id
+msgid "Partner"
+msgstr "Партнёр"
+
+#. module: payslip_payment
+#: model:ir.model,name:payslip_payment.model_hr_payslip
+msgid "Pay Slip"
+msgstr "Расчетный листок"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_amount
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_amount
+msgid "Payment Amount"
+msgstr "Сумма к Оплате"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_payment_date
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_payment_date
+msgid "Payment Date"
+msgstr "Дата Платежа"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_journal_id
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_journal_id
+msgid "Payment Method"
+msgstr "Метод Оплаты"
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_payment_method_id
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_payment_method_id
+msgid "Payment Type"
+msgstr "Тип Платежа"
+
+#. module: payslip_payment
+#: model:ir.model,name:payslip_payment.model_hr_payslip_run
+msgid "Payslip Run"
+msgstr "Записи расчётного листка"
+
+#. module: payslip_payment
+#: code:addons/payslip_payment/wizard/hr_payroll_batchwise_register_payment.py:53
+#, python-format
+msgid "Please Define Employee Private Address"
+msgstr "Please Define Employee Private Address"
+
+#. module: payslip_payment
+#: model:ir.actions.act_window,name:payslip_payment.hr_payslip_batchwise_sheet_register_payment_wizard_action
+#: model:ir.actions.act_window,name:payslip_payment.hr_payslip_sheet_register_payment_wizard_action
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_batchwise_sheet_register_payment_view_form
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_run_form_inherit
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_sheet_register_payment_view_form
+#: model:ir.ui.view,arch_db:payslip_payment.view_hr_payslip_form_inherit_uae_payroll
+msgid "Register Payment"
+msgstr "Регистрация Платежа"
+
+#. module: payslip_payment
+#: model:ir.model.fields,help:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_hide_payment_method
+#: model:ir.model.fields,help:payslip_payment.field_hr_payslip_register_payment_wizard_hide_payment_method
+msgid "Technical field used to hide the payment method if the selected journal has only one available which is 'manual'"
+msgstr "Технические поле используется, чтобы скрыть способ оплаты, если выбранный журнал имеет только один доступный способ \"Вручную\""
+
+#. module: payslip_payment
+#: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:38
+#, python-format
+msgid "The payment amount must be strictly positive."
+msgstr "The payment amount must be strictly positive."
+
+#. module: payslip_payment
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_run_total_amount
+#: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_total_amount
+msgid "Total Amount"
+msgstr "Итоговая сумма"
+
+#. module: payslip_payment
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_batchwise_sheet_register_payment_view_form
+#: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_sheet_register_payment_view_form
+msgid "Validate"
+msgstr "Утвердить"
+
