@@ -36,6 +36,9 @@ class HrPayslip(models.Model):
     @api.depends('line_ids')
     @api.onchange('line_ids')
     def compute_total_amount(self):
+
+        precision = self.env['decimal.precision'].precision_get('Payroll')
+
         for slip in self:
             total_amount_new = 0.0
             for line in slip.line_ids:
