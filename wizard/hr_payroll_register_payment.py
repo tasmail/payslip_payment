@@ -35,7 +35,7 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
     def onchange_currency_id(self):
         original_amount = self._context.get('default_amount', self.amount)
         if self.currency_id:
-            self.amount = original_amount / self.currency_id.rate
+            self.amount = self.env.user.company_id.currency_id.compute(original_amount, self.currency_id)
         else:
             self.amount = original_amount
 
