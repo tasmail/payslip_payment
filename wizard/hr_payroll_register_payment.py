@@ -25,19 +25,11 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
     company_id = fields.Many2one('res.company', related='journal_id.company_id', string='Company', readonly=True, required=True)
     payment_method_id = fields.Many2one('account.payment.method', string='Payment Type', required=True)
     amount = fields.Monetary(string='Payment Amount', required=True)
-    total_amount = fields.Monetary(string='Total Payment Amount')
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.user.company_id.currency_id)
     payment_date = fields.Date(string='Payment Date', default=fields.Date.context_today, required=True)
     communication = fields.Char(string='Memo')
     hide_payment_method = fields.Boolean(compute='_compute_hide_payment_method',
         help="Technical field used to hide the payment method if the selected journal has only one available which is 'manual'")
-
-    @api.onchange('currency_id')
-    def onchange_currency_id(self):
-        if self.currency_id:
-            self.amount = self.total_amount / self.currency_id.rate
-        else:
-            self.amount = self.total_amount
 
     @api.one
     @api.constrains('amount')

@@ -19,7 +19,7 @@
             <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
             <field name="arch" type="xml">
                <xpath expr="/form/header/button[@name='refund_sheet']" position="after">
-                    <button name="%(payslip_payment.hr_payslip_sheet_register_payment_wizard_action)d" states="done" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_total_amount': total_amount}" groups="account.group_account_manager"/>
+                    <button name="%(payslip_payment.hr_payslip_sheet_register_payment_wizard_action)d" states="done" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': total_amount}" groups="account.group_account_manager"/>
                </xpath>
                <xpath expr="/form/header/field[@name='state']" position="replace">
                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done,paid"/>
