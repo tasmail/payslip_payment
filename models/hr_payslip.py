@@ -21,11 +21,11 @@ class HrPayslip(models.Model):
     _inherit = ['hr.payslip', 'mail.thread']
 
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('verify', 'Waiting'),
-        ('done', 'Done'),
-        ('paid', 'Paid'),
-        ('cancel', 'Rejected'),
+        ('draft', _('Draft')),
+        ('verify', _('Waiting')),
+        ('done', _('Done')),
+        ('paid', _('Paid')),
+        ('cancel', _('Rejected')),
     ], string='Status', index=True, readonly=True, copy=False, default='draft',
         help="""* When the payslip is created the status is \'Draft\'
                 \n* If the payslip is under verification, the status is \'Waiting\'.
@@ -56,12 +56,12 @@ class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('done', 'Done'),
-        ('paid', 'Paid'),
-        ('close', 'Close'),
-    ], string='Status', index=True, readonly=True, copy=False, default='draft')
-    total_amount = fields.Float(string='Total Amount', compute='compute_total_amount')
+        ('draft', _('Draft')),
+        ('done', _('Done')),
+        ('paid', _('Paid')),
+        ('close', _('Close')),
+    ], string=_('Status'), index=True, readonly=True, copy=False, default='draft')
+    total_amount = fields.Float(string=_('Total Amount'), compute='compute_total_amount')
 
     @api.multi
     def batch_wise_payslip_confirm(self):
@@ -73,12 +73,17 @@ class HrPayslipRun(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    payslip_id = fields.Many2one('hr.payslip', string='Expense', copy=False, help="Expense where the move line come from")
+    payslip_id = fields.Many2one('hr.payslip', string=_('Expense'), copy=False, help="Expense where the move line come from")
 
     @api.multi
     def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):
         res = super(AccountMoveLine, self).reconcile(writeoff_acc_id=writeoff_acc_id, writeoff_journal_id=writeoff_journal_id)
-        account_move_ids = [l.move_id.id for l in self if float_compare(l.move_id.matched_percentage, 1, precision_digits=5) == 0]
+        account_move_ids = []
+        for l in self:
+            precision_currency = l.move_id.currency_id or l.move_id.company_id.currency_id
+            if float_compare(l.move_id.matched_percentage, 1, precision_rounding=precision_currency.rounding) == 0:
+                account_move_ids.append(l.move_id.id)
+
         if account_move_ids:
             payslip = self.env['hr.payslip'].search([
                 ('move_id', 'in', account_move_ids), ('state', '=', 'done')
