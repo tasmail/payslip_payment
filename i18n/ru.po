@@ -177,7 +177,6 @@ msgstr "Памятка"
 #. module: payslip_payment
 #: code:addons/payslip_payment/models/hr_payslip.py:27
 #: code:addons/payslip_payment/models/hr_payslip.py:61
-#, python-format
 msgid "Paid"
 msgstr "Оплачен"
 
@@ -240,7 +239,7 @@ msgstr "Регистрация Платежа"
 #: code:addons/payslip_payment/models/hr_payslip.py:28
 #, python-format
 msgid "Rejected"
-msgstr "Откланен"
+msgstr "Отклонен"
 
 #. module: payslip_payment
 #: code:addons/payslip_payment/models/hr_payslip.py:63
