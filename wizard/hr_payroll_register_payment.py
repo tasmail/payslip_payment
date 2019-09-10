@@ -20,11 +20,14 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
         payslips = self.env['hr.payslip'].browse(active_ids)
         return payslips.employee_id.address_home_id.id
 
+    def _default_amount(self):
+        return self._get_amount()
+
     partner_id = fields.Many2one('res.partner', string='Partner', required=True, default=_default_partner_id)
     journal_id = fields.Many2one('account.journal', string='Payment Method', required=True, domain=[('type', 'in', ('bank', 'cash'))])
     company_id = fields.Many2one('res.company', related='journal_id.company_id', string='Company', readonly=True, required=True)
     payment_method_id = fields.Many2one('account.payment.method', string='Payment Type', required=True)
-    amount = fields.Monetary(string='Payment Amount', required=True)
+    amount = fields.Monetary(string='Payment Amount', required=True, default=_default_amount)
     currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.user.company_id.currency_id)
     payment_date = fields.Date(string='Payment Date', default=fields.Date.context_today, required=True)
     communication = fields.Char(string='Memo')
@@ -37,9 +40,9 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
             return self.env.user.company_id.currency_id.compute(original_amount, self.currency_id)
         return original_amount
 
-    @api.onchange('currency_id')
-    def onchange_currency_id(self):
-        self.amount = self._get_amount()
+    # @api.onchange('currency_id')
+    # def onchange_currency_id(self):
+    #     self.amount = self._get_amount()
 
     @api.one
     @api.constrains('amount')
@@ -75,7 +78,7 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
             'journal_id': self.journal_id.id,
             'company_id': self.company_id.id,
             'payment_method_id': self.payment_method_id.id,
-            'amount': self._get_amount(),
+            'amount': self.amount,
             'currency_id': self.currency_id.id,
             'payment_date': self.payment_date,
             'communication': self.communication,
