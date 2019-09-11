@@ -13,33 +13,47 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
     _name = "hr.payslip.register.payment.wizard"
     _description = "Expense Report Register Payment wizard"
 
-    @api.model
-    def _default_partner_id(self):
+    def _get_active_payslip(self):
         context = dict(self._context or {})
         active_ids = context.get('active_ids', [])
-        payslips = self.env['hr.payslip'].browse(active_ids)
-        return payslips.employee_id.address_home_id.id
+        return self.env['hr.payslip'].browse(active_ids)
 
+    @api.model
+    def _default_partner_id(self):
+        payslip = self._get_active_payslip()
+        return payslip.employee_id.address_home_id.id
+
+    def _default_currency_id(self):
+        return self.env.user.company_id.currency_id.id
+
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True,
+                                  default=_default_currency_id)
     partner_id = fields.Many2one('res.partner', string='Partner', required=True, default=_default_partner_id)
-    journal_id = fields.Many2one('account.journal', string='Payment Method', required=True, domain=[('type', 'in', ('bank', 'cash'))])
-    company_id = fields.Many2one('res.company', related='journal_id.company_id', string='Company', readonly=True, required=True)
+    journal_id = fields.Many2one('account.journal', string='Payment Method', required=True,
+                                 domain=[('type', 'in', ('bank', 'cash'))])
+    company_id = fields.Many2one('res.company', related='journal_id.company_id', string='Company', readonly=True,
+                                 required=True)
     payment_method_id = fields.Many2one('account.payment.method', string='Payment Type', required=True)
-    amount = fields.Monetary(string='Payment Amount', required=True)
-    currency_id = fields.Many2one('res.currency', string='Currency', required=True, default=lambda self: self.env.user.company_id.currency_id)
+    amount = fields.Monetary(string='Payment Amount',
+                             currency_field='currency_id',
+                             required=True)
+    amount_residual = fields.Monetary(string='Residual Amount',
+                                      currency_field='currency_id',
+                                      readonly=True)
     payment_date = fields.Date(string='Payment Date', default=fields.Date.context_today, required=True)
     communication = fields.Char(string='Memo')
     hide_payment_method = fields.Boolean(compute='_compute_hide_payment_method',
-        help="Technical field used to hide the payment method if the selected journal has only one available which is 'manual'")
+                                         help="Technical field used to hide the payment method if the selected journal has only one available which is 'manual'")
 
-    def _get_amount(self):
-        original_amount = self._context.get('default_amount', self.amount)
+    def _get_amount(self, amount):
         if self.currency_id:
-            return self.env.user.company_id.currency_id.compute(original_amount, self.currency_id)
-        return original_amount
+            return self.env.user.company_id.currency_id.compute(amount, self.currency_id)
+        return amount
 
-    @api.onchange('currency_id')
-    def onchange_currency_id(self):
-        self.amount = self._get_amount()
+    @api.onchange('amount', 'currency_id')
+    def _update_residual(self):
+        payslip = self._get_active_payslip()
+        self.amount_residual = self._get_amount(payslip.residual_company_signed) - self.amount
 
     @api.one
     @api.constrains('amount')
@@ -63,7 +77,8 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
             payment_methods = self.journal_id.outbound_payment_method_ids
             self.payment_method_id = payment_methods and payment_methods[0] or False
             # Set payment method domain (restrict to methods enabled for the journal and to selected payment type)
-            return {'domain': {'payment_method_id': [('payment_type', '=', 'outbound'), ('id', 'in', payment_methods.ids)]}}
+            return {
+                'domain': {'payment_method_id': [('payment_type', '=', 'outbound'), ('id', 'in', payment_methods.ids)]}}
         return {}
 
     def _get_payment_vals(self):
@@ -75,7 +90,7 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
             'journal_id': self.journal_id.id,
             'company_id': self.company_id.id,
             'payment_method_id': self.payment_method_id.id,
-            'amount': self._get_amount(),
+            'amount': self.amount,
             'currency_id': self.currency_id.id,
             'payment_date': self.payment_date,
             'communication': self.communication,
@@ -85,9 +100,7 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
     @api.multi
     def expense_post_payment(self):
         self.ensure_one()
-        context = dict(self._context or {})
-        active_ids = context.get('active_ids', [])
-        payslip = self.env['hr.payslip'].browse(active_ids)
+        payslip = self._get_active_payslip()
 
         # Create payment and post it
         payment = self.env['account.payment'].create(self._get_payment_vals())
@@ -95,20 +108,26 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
         # for move in payment.move_line_ids:
         #     move.name = +
         # Log the payment in the chatter
-        body = (_("A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made.") % (payment.amount, payment.currency_id.symbol, url_encode({'model': 'account.payment', 'res_id': payment.id}), payment.name, payslip.name))
+        body = (_(
+            "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made.") % (
+                    payment.amount, payment.currency_id.symbol,
+                    url_encode({'model': 'account.payment', 'res_id': payment.id}), payment.name, payslip.name))
         payslip.message_post(body=body)
 
-        # Reconcile the payment, i.e. lookup on the payable account move lines
-        account_move_lines_to_reconcile = self.env['account.move.line']
+        if payslip.reconciled:
+            # Reconcile the payment, i.e. lookup on the payable account move lines
+            account_move_lines_to_reconcile = self.env['account.move.line']
 
-        for line in payment.move_line_ids + payslip.move_id.line_ids:
-            if line.account_id.internal_type == 'payable':
-                account_move_lines_to_reconcile |= line
-        account_move_lines_to_reconcile.reconcile()
+            for line in payment.move_line_ids + payslip.move_id.line_ids:
+                if line.account_id.internal_type == 'payable':
+                    account_move_lines_to_reconcile |= line
+            account_move_lines_to_reconcile.reconcile()
+
         if payslip.payslip_run_id:
-            payslip_paid_search = self.env['hr.payslip'].search([('payslip_run_id','=',payslip.payslip_run_id.id),('state','=','paid')])
+            payslip_paid_search = self.env['hr.payslip'].search(
+                [('payslip_run_id', '=', payslip.payslip_run_id.id), ('state', '=', 'paid')])
             if payslip_paid_search:
                 if len(payslip.payslip_run_id.slip_ids) == len(payslip_paid_search):
-                    payslip.payslip_run_id.write({'state':'paid'})
+                    payslip.payslip_run_id.write({'state': 'paid'})
 
         return {'type': 'ir.actions.act_window_close'}

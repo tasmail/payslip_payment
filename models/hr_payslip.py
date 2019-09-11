@@ -12,6 +12,9 @@ class HrPayslip(models.Model):
     _name = 'hr.payslip'
     _inherit = ['hr.payslip', 'mail.thread']
 
+    def _get_default_currency_id(self):
+        return self.env.user.company_id.currency_id.id
+
     state = fields.Selection([
         ('draft', _('Draft')),
         ('verify', _('Waiting')),
@@ -34,7 +37,7 @@ class HrPayslip(models.Model):
     residual = fields.Monetary(string='Amount Due',
                                compute='_compute_residual', store=True, help="Remaining amount due.")
 
-    residual_signed = fields.Monetary(string='Amount Due in Company Currency',
+    residual_signed = fields.Monetary(string='Amount Due in Other Currency',
                                       compute='_compute_residual', store=True,
                                       currency_field='currency_id',
                                       help="Remaining amount due in the currency of the invoice.")
@@ -43,9 +46,6 @@ class HrPayslip(models.Model):
                                               compute='_compute_residual', store=True,
                                               currency_field='currency_id',
                                               help="Remaining amount due in the currency of the company.")
-
-    def _get_default_currency_id(self):
-        return self.env.user.company_id.currency_id.id
 
     @api.depends('line_ids')
     @api.onchange('line_ids')
@@ -68,10 +68,17 @@ class HrPayslip(models.Model):
         'move_id.line_ids.amount_residual',
         'move_id.line_ids.currency_id')
     def _compute_residual(self):
+        if self.state not in ['done', 'paid']:
+            return
+
+        move_lines = self.sudo().move_id.line_ids
+        if not move_lines:
+            return
+
         residual = 0.0
         residual_company_signed = 0.0
         sign = self.credit_note and -1 or 1
-        for line in self.sudo().move_id.line_ids:
+        for line in move_lines:
             if line.account_id.internal_type in ('receivable', 'payable'):
                 residual_company_signed += line.amount_residual
                 if line.currency_id == self.currency_id:
@@ -79,7 +86,7 @@ class HrPayslip(models.Model):
                 else:
                     from_currency = (line.currency_id and line.currency_id.with_context(
                         date=line.date)) or line.company_id.currency_id.with_context(date=line.date)
-                    residual += from_currency.compute(line.amount_residual, self.currency_id)
+                    residual += from_currency.compute(line.amount_residual_currency, self.currency_id)
         self.residual_company_signed = abs(residual_company_signed) * sign
         self.residual_signed = abs(residual) * sign
         self.residual = abs(residual)

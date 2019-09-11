@@ -18,9 +18,10 @@
                                 <field name="payment_method_id" widget="radio" attrs="{'invisible': [('hide_payment_method', '=', True)]}"/>
                                 <label for="amount" readonly="1"/>
                                 <div name="amount_div" class="o_row">
-                                    <field name="amount" readonly="1"/>
+                                    <field name="amount"/>
                                     <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
                                 </div>
+                                <field name="amount_residual"/>
                             </group>
                             <group>
                                 <field name="payment_date"/>

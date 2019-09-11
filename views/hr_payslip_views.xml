@@ -24,7 +24,7 @@
                <xpath expr="/form/sheet/notebook/page/field[@name='input_line_ids']" position="after">
                    <group class="oe_subtotal_footer oe_right">
                        <field name="total_amount" class="oe_subtotal_footer_separator"/>
-                       <field name="residual" class="oe_subtotal_footer_separator" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                       <field name="residual_company_signed" class="oe_subtotal_footer_separator" attrs="{'invisible': [('state', '=', 'draft')]}"/>
                    </group>
                </xpath>
                <xpath expr="/form/header/field[@name='state']" position="replace">
