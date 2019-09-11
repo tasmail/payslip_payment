@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-import pytz
-import time
-import babel
 
-from odoo import _, api, fields, models, tools, _
-from odoo.addons.mail.models.mail_template import format_tz
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools.translate import html_translate
+from odoo import _, api, fields, models, _
 
-from datetime import datetime
-from datetime import time as datetime_time
-from dateutil import relativedelta
 from odoo.tools import float_compare, float_is_zero
 
 _logger = logging.getLogger(__name__)
@@ -32,11 +23,33 @@ class HrPayslip(models.Model):
                 \n* If the payslip is under verification, the status is \'Waiting\'.
                 \n* If the payslip is confirmed then status is set to \'Done\'.
                 \n* When user cancel payslip the status is \'Rejected\'.""", track_visibility='onchange')
-    total_amount = fields.Float(string='Total Amount', compute='compute_total_amount', store=True)
+
+    currency_id = fields.Many2one('res.currency', 'Currency', default=_get_default_currency_id, required=True)
+
+    total_amount = fields.Monetary(string='Total Amount', compute='_compute_total_amount', store=True)
+
+    reconciled = fields.Boolean(string='Paid/Reconciled', store=True, readonly=True, compute='_compute_residual',
+                                help="It indicates that the payslip has been paid and the journal entry of the payslip has been reconciled with one or several journal entries of payment.")
+
+    residual = fields.Monetary(string='Amount Due',
+                               compute='_compute_residual', store=True, help="Remaining amount due.")
+
+    residual_signed = fields.Monetary(string='Amount Due in Company Currency',
+                                      compute='_compute_residual', store=True,
+                                      currency_field='currency_id',
+                                      help="Remaining amount due in the currency of the invoice.")
+
+    residual_company_signed = fields.Monetary(string='Amount Due in Company Currency',
+                                              compute='_compute_residual', store=True,
+                                              currency_field='currency_id',
+                                              help="Remaining amount due in the currency of the company.")
+
+    def _get_default_currency_id(self):
+        return self.env.user.company_id.currency_id.id
 
     @api.depends('line_ids')
     @api.onchange('line_ids')
-    def compute_total_amount(self):
+    def _compute_total_amount(self):
 
         precision = self.env['decimal.precision'].precision_get('Payroll')
 
@@ -48,6 +61,33 @@ class HrPayslip(models.Model):
                     continue
                 total_amount_new += amount
             slip.total_amount = total_amount_new
+
+    @api.one
+    @api.depends(
+        'state', 'line_ids',
+        'move_id.line_ids.amount_residual',
+        'move_id.line_ids.currency_id')
+    def _compute_residual(self):
+        residual = 0.0
+        residual_company_signed = 0.0
+        sign = self.credit_note and -1 or 1
+        for line in self.sudo().move_id.line_ids:
+            if line.account_id.internal_type in ('receivable', 'payable'):
+                residual_company_signed += line.amount_residual
+                if line.currency_id == self.currency_id:
+                    residual += line.amount_residual_currency if line.currency_id else line.amount_residual
+                else:
+                    from_currency = (line.currency_id and line.currency_id.with_context(
+                        date=line.date)) or line.company_id.currency_id.with_context(date=line.date)
+                    residual += from_currency.compute(line.amount_residual, self.currency_id)
+        self.residual_company_signed = abs(residual_company_signed) * sign
+        self.residual_signed = abs(residual) * sign
+        self.residual = abs(residual)
+        digits_rounding_precision = self.currency_id.rounding
+        if float_is_zero(self.residual, precision_rounding=digits_rounding_precision):
+            self.reconciled = True
+        else:
+            self.reconciled = False
 
     @api.multi
     def set_to_paid(self):
@@ -63,7 +103,7 @@ class HrPayslipRun(models.Model):
         ('paid', _('Paid')),
         ('close', _('Close')),
     ], string=_('Status'), index=True, readonly=True, copy=False, default='draft')
-    total_amount = fields.Float(string=_('Total Amount'), compute='compute_total_amount')
+    total_amount = fields.Float(string=_('Total Amount'), compute='_compute_total_amount')
 
     @api.multi
     def batch_wise_payslip_confirm(self):
