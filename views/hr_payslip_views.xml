@@ -21,6 +21,11 @@
                <xpath expr="/form/header/button[@name='refund_sheet']" position="after">
                     <button name="%(payslip_payment.hr_payslip_sheet_register_payment_wizard_action)d" states="done" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" context="{'default_amount': total_amount}" groups="account.group_account_manager"/>
                </xpath>
+               <xpath expr="/form/sheet/notebook/page" position="after">
+                    <page string="Payments">
+                        <field name="payment_ids"/>
+                    </page>
+               </xpath>
                <xpath expr="/form/sheet/notebook/page/field[@name='input_line_ids']" position="after">
                    <group class="oe_subtotal_footer oe_right">
                        <field name="total_amount" class="oe_subtotal_footer_separator"/>

@@ -94,7 +94,8 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
             'currency_id': self.currency_id.id,
             'payment_date': self.payment_date,
             'communication': self.communication,
-            'writeoff_label': 'Payslip Payment'
+            'writeoff_label': 'Payslip Payment',
+            'payslip_id': self._get_active_payslip().id
         }
 
     @api.multi
