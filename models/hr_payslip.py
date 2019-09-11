@@ -74,9 +74,7 @@ class HrPayslip(models.Model):
                 if line.currency_id == self.currency_id:
                     residual += line.amount_residual_currency if line.currency_id else line.amount_residual
                 else:
-                    from_currency = (line.currency_id and line.currency_id.with_context(
-                        date=line.date)) or line.company_id.currency_id.with_context(date=line.date)
-                    residual += from_currency.compute(line.amount_residual_currency, self.currency_id)
+                    residual += line.amount_residual
 
         return residual, residual_company_signed
 
@@ -97,8 +95,6 @@ class HrPayslip(models.Model):
 
         residual, residual_company_signed = self._update_residual(move_lines)
 
-        payment_residual = 0.0
-        payment_residual_company_signed = 0.0
         for payment in self.sudo().payment_ids:
             if payment.move_line_ids:
                 payment_residual, payment_residual_company_signed = self._update_residual(payment.move_line_ids)
@@ -118,7 +114,8 @@ class HrPayslip(models.Model):
 
     @api.multi
     def set_to_paid(self):
-        self.write({'state': 'paid'})
+        if self.state not in 'paid':
+            self.write({'state': 'paid'})
 
 
 class HrPayslipRun(models.Model):
@@ -150,17 +147,9 @@ class AccountMoveLine(models.Model):
     def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):
         res = super(AccountMoveLine, self).reconcile(writeoff_acc_id=writeoff_acc_id,
                                                      writeoff_journal_id=writeoff_journal_id)
-        account_move_ids = []
         for l in self:
-            precision_currency = l.move_id.currency_id or l.move_id.company_id.currency_id
-            if float_compare(l.move_id.matched_percentage, 1, precision_rounding=precision_currency.rounding) == 0:
-                account_move_ids.append(l.move_id.id)
-
-        if account_move_ids:
-            payslip = self.env['hr.payslip'].search([
-                ('move_id', 'in', account_move_ids), ('state', '=', 'done')
-            ])
-            payslip.set_to_paid()
+            if l.payment_id.payslip_id and l.payment_id.payslip_id.reconciled:
+                l.payment_id.payslip_id.set_to_paid()
         return res
 
 
