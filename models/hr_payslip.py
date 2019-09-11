@@ -16,6 +16,7 @@ from odoo.tools import float_compare, float_is_zero
 
 _logger = logging.getLogger(__name__)
 
+
 class HrPayslip(models.Model):
     _name = 'hr.payslip'
     _inherit = ['hr.payslip', 'mail.thread']
@@ -52,6 +53,7 @@ class HrPayslip(models.Model):
     def set_to_paid(self):
         self.write({'state': 'paid'})
 
+
 class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
@@ -68,16 +70,19 @@ class HrPayslipRun(models.Model):
         for record in self.slip_ids:
             if record.state == 'draft':
                 record.action_payslip_done()
-        self.state='done'
+        self.state = 'done'
+
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    payslip_id = fields.Many2one('hr.payslip', string=_('Expense'), copy=False, help="Expense where the move line come from")
+    payslip_id = fields.Many2one('hr.payslip', string=_('Expense'), copy=False,
+                                 help="Expense where the move line come from")
 
     @api.multi
     def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):
-        res = super(AccountMoveLine, self).reconcile(writeoff_acc_id=writeoff_acc_id, writeoff_journal_id=writeoff_journal_id)
+        res = super(AccountMoveLine, self).reconcile(writeoff_acc_id=writeoff_acc_id,
+                                                     writeoff_journal_id=writeoff_journal_id)
         account_move_ids = []
         for l in self:
             precision_currency = l.move_id.currency_id or l.move_id.company_id.currency_id
