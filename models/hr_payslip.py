@@ -140,8 +140,8 @@ class HrPayslipRun(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    payslip_id = fields.Many2one('hr.payslip', string=_('Expense'), copy=False,
-                                 help='Expense where the move line come from')
+    payslip_id = fields.Many2one('hr.payslip', string=_('Payslip'), copy=False,
+                                 help='Payslip where the move line come from')
 
     @api.multi
     def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):

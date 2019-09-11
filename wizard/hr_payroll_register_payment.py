@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class HrPayslipRegisterPaymentWizard(models.TransientModel):
     _name = "hr.payslip.register.payment.wizard"
-    _description = "Expense Report Register Payment wizard"
+    _description = "Payslip Register Payment wizard"
 
     def _get_active_payslip(self):
         context = dict(self._context or {})
