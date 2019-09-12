@@ -106,8 +106,8 @@ class HrPayslip(models.Model):
         self.residual_signed = abs(residual) * sign
         self.residual = abs(residual)
 
-        digits_rounding_precision = self.currency_id.rounding
-        if float_is_zero(self.residual, precision_rounding=digits_rounding_precision):
+        precision = self.env['decimal.precision'].precision_get('Account')
+        if float_is_zero(self.residual, precision_digits=precision):
             self.reconciled = True
         else:
             self.reconciled = False
