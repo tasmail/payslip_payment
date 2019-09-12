@@ -107,7 +107,7 @@ class HrPayslip(models.Model):
         self.residual = abs(residual)
 
         precision = self.env['decimal.precision'].precision_get('Account')
-        if float_is_zero(self.residual, precision_digits=precision):
+        if 0.05 > self.residual >= 0:
             self.reconciled = True
         else:
             self.reconciled = False
