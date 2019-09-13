@@ -47,7 +47,8 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
 
     def _get_amount(self, amount):
         if self.currency_id:
-            return self.env.user.company_id.currency_id.compute(amount, self.currency_id)
+            return self.env.user.company_id.currency_id.with_context(date=self.payment_date).compute(amount,
+                                                                                                     self.currency_id)
         return amount
 
     @api.onchange('amount', 'currency_id')
