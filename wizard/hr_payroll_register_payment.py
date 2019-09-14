@@ -45,6 +45,11 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
     hide_payment_method = fields.Boolean(compute='_compute_hide_payment_method',
                                          help="Technical field used to hide the payment method if the selected journal has only one available which is 'manual'")
 
+    @api.onchange('currency_id')
+    def _onchange_currency_id(self):
+        payslip = self._get_active_payslip()
+        self.amount = self._get_amount(payslip.residual_company_signed)
+
     def _get_amount(self, amount):
         if self.currency_id:
             return self.env.user.company_id.currency_id.with_context(date=self.payment_date).compute(amount,
