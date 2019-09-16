@@ -52,7 +52,7 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
         else:
             self.currency_id = self.env.user.company_id.currency_id
 
-    @api.onchange('currency_id')
+    @api.onchange('currency_id', 'payment_date')
     def _onchange_currency_id(self):
         payslip = self._get_active_payslip()
         self.amount = self._get_amount(payslip.residual_company_signed)
@@ -63,7 +63,7 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
                                                                                                      self.currency_id)
         return amount
 
-    @api.onchange('amount', 'currency_id')
+    @api.onchange('amount', 'currency_id', 'payment_date')
     def _update_residual(self):
         payslip = self._get_active_payslip()
         self.amount_residual = self._get_amount(payslip.residual_company_signed) - self.amount
