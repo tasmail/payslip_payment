@@ -117,6 +117,19 @@ class HrPayslip(models.Model):
         if self.state not in 'paid':
             self.write({'state': 'paid'})
 
+    @api.model
+    def get_contract(self, employee, date_from, date_to):
+        if self.contract_id:
+            return [self.contract_id.id]
+        contract_ids = super(HrPayslip, self).get_contract(employee, date_from, date_to)
+        if not contract_ids or not len(contract_ids):
+            return []
+        return [contract_ids[0]]
+
+    @api.onchange('contract_id')
+    def _onchange_contract_id(self):
+        self.onchange_employee()
+
 
 class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
