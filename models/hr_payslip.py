@@ -171,3 +171,10 @@ class AccountPayment(models.Model):
 
     payslip_id = fields.Many2one('hr.payslip', string=_('Payslip'), copy=False,
                                  help='Payslip where the payment come from')
+
+    def _compute_destination_account_id(self):
+        destination_account_id = self._context.get('destination_account_id', False)
+        if destination_account_id:
+            self.destination_account_id = destination_account_id
+            return
+        super(AccountPayment, self)._compute_destination_account_id()

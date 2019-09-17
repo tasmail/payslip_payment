@@ -116,9 +116,15 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
         self.ensure_one()
         payslip = self._get_active_payslip()
 
-        # Create payment and post it
+        destination_account_id = self.partner_id.property_account_payable_id
+        if payslip.move_id:
+            for line in payslip.move_id.line_ids:
+                if line.credit:
+                    destination_account_id = line.account_id
+
+                    # Create payment and post it
         payment = self.env['account.payment'].create(self._get_payment_vals())
-        payment.post()
+        payment.with_context({'destination_account_id': destination_account_id.id}).post()
         # for move in payment.move_line_ids:
         #     move.name = +
         # Log the payment in the chatter
