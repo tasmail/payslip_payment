@@ -49,6 +49,27 @@ class HrPayslip(models.Model):
                                               currency_field='currency_id',
                                               help="Remaining amount due in the currency of the company.")
 
+    @api.multi
+    def refund_sheet(self):
+        for payslip in self:
+            copied_payslip = payslip
+            copied_payslip.set_to_draft()
+
+#        formview_ref = self.env.ref('hr_payroll.view_hr_payslip_form', False)
+#        treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
+#        return {
+#            'name': ("Refund Payslip"),
+#            'view_mode': 'form',
+#            'view_id': False,
+#            'view_type': 'form',
+#            'res_model': 'hr.payslip',
+#            'type': 'ir.actions.act_window',
+#            'target': 'current',
+#            'domain': "[('id', 'in', %s)]" % copied_payslip.ids,
+#            'views': [(treeview_ref and treeview_ref.id or False, 'tree'), (formview_ref and formview_ref.id or False, 'form')],
+#            'context': {}
+#        }
+
     @api.depends('line_ids')
     @api.onchange('line_ids')
     def _compute_total_amount(self):
@@ -116,6 +137,11 @@ class HrPayslip(models.Model):
     def set_to_paid(self):
         if self.state not in 'paid':
             self.write({'state': 'paid'})
+
+    @api.multi
+    def set_to_draft(self):
+        if self.state not in 'draft':
+            self.write({'state': 'draft'})
 
     @api.model
     def get_contract(self, employee, date_from, date_to):
