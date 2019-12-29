@@ -4,7 +4,6 @@ import logging
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
-from werkzeug import url_encode
 
 _logger = logging.getLogger(__name__)
 
@@ -114,40 +113,8 @@ class HrPayslipRegisterPaymentWizard(models.TransientModel):
     @api.multi
     def expense_post_payment(self):
         self.ensure_one()
-        payslip = self._get_active_payslip()
-
-        destination_account_id = self.partner_id.property_account_payable_id
-        if payslip.move_id:
-            for line in payslip.move_id.line_ids:
-                if line.credit:
-                    destination_account_id = line.account_id
-
-                    # Create payment and post it
+        # Create payment and post it
         payment = self.env['account.payment'].create(self._get_payment_vals())
-        payment.with_context({'destination_account_id': destination_account_id.id}).post()
-        # for move in payment.move_line_ids:
-        #     move.name = +
-        # Log the payment in the chatter
-        body = (_(
-            "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made.") % (
-                    payment.amount, payment.currency_id.symbol,
-                    url_encode({'model': 'account.payment', 'res_id': payment.id}), payment.name, payslip.name))
-        payslip.message_post(body=body)
-
-        if payslip.reconciled:
-            # Reconcile the payment, i.e. lookup on the payable account move lines
-            account_move_lines_to_reconcile = self.env['account.move.line']
-
-            for line in payment.move_line_ids + payslip.move_id.line_ids:
-                if line.account_id.internal_type == 'payable':
-                    account_move_lines_to_reconcile |= line
-            account_move_lines_to_reconcile.reconcile()
-
-        if payslip.payslip_run_id:
-            payslip_paid_search = self.env['hr.payslip'].search(
-                [('payslip_run_id', '=', payslip.payslip_run_id.id), ('state', '=', 'paid')])
-            if payslip_paid_search:
-                if len(payslip.payslip_run_id.slip_ids) == len(payslip_paid_search):
-                    payslip.payslip_run_id.write({'state': 'paid'})
+        payment.post()
 
         return {'type': 'ir.actions.act_window_close'}

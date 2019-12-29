@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-29 11:18+0000\n"
-"PO-Revision-Date: 2019-12-29 11:18+0000\n"
+"POT-Creation-Date: 2019-12-29 12:37+0000\n"
+"PO-Revision-Date: 2019-12-29 12:37+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,28 +16,28 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: payslip_payment
+#: code:addons/payslip_payment/models/hr_payslip.py:241
 #: code:addons/payslip_payment/wizard/hr_payroll_batchwise_register_payment.py:77
-#: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:131
 #, python-format
 msgid "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made."
 msgstr "Оплата %s %s по ссылке <a href='/mail/view?%s'>%s</a>  %s была сделанна."
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:39
+#: code:addons/payslip_payment/models/hr_payslip.py:41
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_residual
 #, python-format
 msgid "Amount Due"
 msgstr "Сумма долга"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:47
+#: code:addons/payslip_payment/models/hr_payslip.py:49
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_residual_company_signed
 #, python-format
 msgid "Amount Due in Company Currency"
 msgstr "Сумма долга в валюте компании"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:42
+#: code:addons/payslip_payment/models/hr_payslip.py:44
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_residual_signed
 #, python-format
 msgid "Amount Due in Other Currency"
@@ -60,7 +60,7 @@ msgid "Cancel"
 msgstr "Отмена"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:167
+#: code:addons/payslip_payment/models/hr_payslip.py:160
 #: model:ir.ui.view,arch_db:payslip_payment.hr_payslip_run_form_inherit
 #, python-format
 msgid "Close"
@@ -101,7 +101,7 @@ msgid "Created on"
 msgstr "Создано"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:30
+#: code:addons/payslip_payment/models/hr_payslip.py:32
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_batchwise_register_payment_wizard_currency_id
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_currency_id
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_register_payment_wizard_currency_id
@@ -116,15 +116,15 @@ msgid "Display Name"
 msgstr "Отображаемое имя"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:21
-#: code:addons/payslip_payment/models/hr_payslip.py:165
+#: code:addons/payslip_payment/models/hr_payslip.py:23
+#: code:addons/payslip_payment/models/hr_payslip.py:158
 #, python-format
 msgid "Done"
 msgstr "Завершен"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:19
-#: code:addons/payslip_payment/models/hr_payslip.py:164
+#: code:addons/payslip_payment/models/hr_payslip.py:21
+#: code:addons/payslip_payment/models/hr_payslip.py:157
 #, python-format
 msgid "Draft"
 msgstr "Черновик"
@@ -187,20 +187,20 @@ msgid "Memo"
 msgstr "Памятка"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:22
-#: code:addons/payslip_payment/models/hr_payslip.py:166
+#: code:addons/payslip_payment/models/hr_payslip.py:24
+#: code:addons/payslip_payment/models/hr_payslip.py:159
 #, python-format
 msgid "Paid"
 msgstr "Оплачен"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:211
+#: code:addons/payslip_payment/models/hr_payslip.py:204
 #, python-format
 msgid "Paid Invoices"
 msgstr "Оплаченные счета"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:36
+#: code:addons/payslip_payment/models/hr_payslip.py:38
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_reconciled
 #, python-format
 msgid "Paid/Reconciled"
@@ -241,7 +241,7 @@ msgid "Payment Type"
 msgstr "Тип Платежа"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:32
+#: code:addons/payslip_payment/models/hr_payslip.py:34
 #: model:ir.model,name:payslip_payment.model_account_payment
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_payment_ids
 #: model:ir.ui.view,arch_db:payslip_payment.view_hr_payslip_form_inherit_uae_payroll
@@ -250,8 +250,8 @@ msgid "Payments"
 msgstr "Платежи"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:182
-#: code:addons/payslip_payment/models/hr_payslip.py:198
+#: code:addons/payslip_payment/models/hr_payslip.py:175
+#: code:addons/payslip_payment/models/hr_payslip.py:191
 #: model:ir.model.fields,field_description:payslip_payment.field_account_move_line_payslip_id
 #: model:ir.model.fields,field_description:payslip_payment.field_account_payment_payslip_id
 #, python-format
@@ -261,7 +261,7 @@ msgstr "Расчетный листок"
 #. module: payslip_payment
 #: model:ir.model,name:payslip_payment.model_hr_payslip_register_payment_wizard
 msgid "Payslip Register Payment wizard"
-msgstr "Помощник Регистрации Платежа"
+msgstr "Payslip Register Payment wizard"
 
 #. module: payslip_payment
 #: model:ir.model,name:payslip_payment.model_hr_payslip_run
@@ -276,7 +276,7 @@ msgstr "Payslip where the move line come from"
 #. module: payslip_payment
 #: model:ir.model.fields,help:payslip_payment.field_account_payment_payslip_id
 msgid "Payslip where the payment come from"
-msgstr "Расчётный лист, с которым связан платеж"
+msgstr "Payslip, с которым связан платеж"
 
 #. module: payslip_payment
 #: model:ir.ui.view,arch_db:payslip_payment.view_account_payment_form_payslip
@@ -305,7 +305,7 @@ msgid "Register Payment"
 msgstr "Регистрация Платежа"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:23
+#: code:addons/payslip_payment/models/hr_payslip.py:25
 #, python-format
 msgid "Rejected"
 msgstr "Отклонено"
@@ -331,7 +331,7 @@ msgid "Residual Amount"
 msgstr "Сумма Остатка"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:168
+#: code:addons/payslip_payment/models/hr_payslip.py:161
 #, python-format
 msgid "Status"
 msgstr "Состояние"
@@ -343,14 +343,32 @@ msgid "Technical field used to hide the payment method if the selected journal h
 msgstr "Технические поле используется, чтобы скрыть способ оплаты, если выбранный журнал имеет только один доступный способ \"Вручную\""
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:75
+#: code:addons/payslip_payment/wizard/hr_payroll_register_payment.py:74
 #, python-format
 msgid "The payment amount must be strictly positive."
 msgstr "Сумма платежа может быть только положительной."
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:34
-#: code:addons/payslip_payment/models/hr_payslip.py:169
+#: code:addons/payslip_payment/models/hr_payslip.py:224
+#, python-format
+msgid "The payment cannot be processed because the payslip is not confirmed!"
+msgstr "Невозможно подтвердить платеж, платеж связан с не подтвержденным платежным листом!"
+
+#. module: payslip_payment
+#: code:addons/payslip_payment/models/hr_payslip.py:58
+#, python-format
+msgid "The payslip cannot be refunded, because it has confirmed payments!"
+msgstr "Невозможно отменить платежный лист, лист содержит подтвержденные платежи!"
+
+#. module: payslip_payment
+#: code:addons/payslip_payment/models/hr_payslip.py:61
+#, python-format
+msgid "The payslip cannot be refunded, because it has not canceled account move lines!"
+msgstr "Невозможно отменить платежный лист, лист содержит подтвержденные проводки!"
+
+#. module: payslip_payment
+#: code:addons/payslip_payment/models/hr_payslip.py:36
+#: code:addons/payslip_payment/models/hr_payslip.py:162
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_run_total_amount
 #: model:ir.model.fields,field_description:payslip_payment.field_hr_payslip_total_amount
 #, python-format
@@ -364,7 +382,7 @@ msgid "Validate"
 msgstr "Утвердить"
 
 #. module: payslip_payment
-#: code:addons/payslip_payment/models/hr_payslip.py:20
+#: code:addons/payslip_payment/models/hr_payslip.py:22
 #, python-format
 msgid "Waiting"
 msgstr "В Ожидании"

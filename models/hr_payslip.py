@@ -5,6 +5,7 @@ from odoo import _, api, fields, models, _
 
 from odoo.tools import float_is_zero
 from odoo.exceptions import ValidationError
+from werkzeug import url_encode
 
 _logger = logging.getLogger(__name__)
 
@@ -53,6 +54,12 @@ class HrPayslip(models.Model):
     @api.multi
     def refund_sheet(self):
         for payslip in self:
+            if any(inv.state != 'draft' for inv in payslip.payment_ids):
+                raise ValidationError(_("The payslip cannot be refunded, because it has confirmed payments!"))
+
+            if payslip.move_id:
+                raise ValidationError(_("The payslip cannot be refunded, because it has not canceled account move lines!"))
+
             copied_payslip = payslip
             copied_payslip.set_to_draft()
 
@@ -172,9 +179,9 @@ class AccountMoveLine(models.Model):
     def reconcile(self, writeoff_acc_id=False, writeoff_journal_id=False):
         res = super(AccountMoveLine, self).reconcile(writeoff_acc_id=writeoff_acc_id,
                                                      writeoff_journal_id=writeoff_journal_id)
-        for l in self:
-            if l.payment_id.payslip_id and l.payment_id.payslip_id.reconciled:
-                l.payment_id.payslip_id.set_to_paid()
+        for rec in self:
+            if rec.payment_id.payslip_id and rec.payment_id.payslip_id.reconciled:
+                rec.payment_id.payslip_id.set_to_paid()
         return res
 
 
@@ -205,9 +212,50 @@ class AccountPayment(models.Model):
 
     @api.multi
     def post(self):
-        for rec in self:
+        self.ensure_one()
 
-            if rec.payslip_id and rec.payslip_id.state != 'done':
-                raise ValidationError(_("The payment cannot be processed because the payslip is not confirmed!"))
+        destination_account_id = None
+        payment = None
+        payslip = None
 
-        super(AccountPayment, self).post()
+        if 'destination_account_id' not in self.env.context:
+            for rec in self:
+                if rec.payslip_id and rec.payslip_id.state != 'done':
+                    raise ValidationError(_("The payment cannot be processed because the payslip is not confirmed!"))
+                payslip = rec.payslip_id
+                payment = rec
+                destination_account_id = payslip.employee_id.address_home_id.property_account_payable_id
+                if payslip.move_id:
+                    for line in payslip.move_id.line_ids:
+                        if line.credit:
+                            destination_account_id = line.account_id
+
+        if destination_account_id:
+            context = dict(self.env.context)
+            context['destination_account_id'] = destination_account_id
+            super(AccountPayment, self).with_context(context).post()
+        else:
+            super(AccountPayment, self).post()
+
+        if payment and payslip:
+            body = (_(
+                "A payment of %s %s with the reference <a href='/mail/view?%s'>%s</a> related to your expense %s has been made.") % (
+                        payment.amount, payment.currency_id.symbol,
+                        url_encode({'model': 'account.payment', 'res_id': payment.id}), payment.name, payslip.name))
+            payslip.message_post(body=body)
+
+            if payslip.reconciled:
+                # Reconcile the payment, i.e. lookup on the payable account move lines
+                account_move_lines_to_reconcile = self.env['account.move.line']
+
+                for line in payment.move_line_ids + payslip.move_id.line_ids:
+                    if line.account_id.internal_type == 'payable':
+                        account_move_lines_to_reconcile |= line
+                account_move_lines_to_reconcile.reconcile()
+
+            if payslip.payslip_run_id:
+                payslip_paid_search = self.env['hr.payslip'].search(
+                    [('payslip_run_id', '=', payslip.payslip_run_id.id), ('state', '=', 'paid')])
+                if payslip_paid_search:
+                    if len(payslip.payslip_run_id.slip_ids) == len(payslip_paid_search):
+                        payslip.payslip_run_id.write({'state': 'paid'})
