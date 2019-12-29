@@ -24,6 +24,7 @@ Key Features
         'wizard/hr_payroll_register_payment.xml',
         'wizard/hr_payroll_batchwise_register_payment.xml',
         'views/hr_payslip_views.xml',
+        'views/account_payment_view.xml',
     ],
     'installable': True,
     'auto_install': False,

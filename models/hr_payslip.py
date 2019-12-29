@@ -3,7 +3,8 @@ import logging
 
 from odoo import _, api, fields, models, _
 
-from odoo.tools import float_compare, float_is_zero
+from odoo.tools import float_is_zero
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -54,21 +55,6 @@ class HrPayslip(models.Model):
         for payslip in self:
             copied_payslip = payslip
             copied_payslip.set_to_draft()
-
-#        formview_ref = self.env.ref('hr_payroll.view_hr_payslip_form', False)
-#        treeview_ref = self.env.ref('hr_payroll.view_hr_payslip_tree', False)
-#        return {
-#            'name': ("Refund Payslip"),
-#            'view_mode': 'form',
-#            'view_id': False,
-#            'view_type': 'form',
-#            'res_model': 'hr.payslip',
-#            'type': 'ir.actions.act_window',
-#            'target': 'current',
-#            'domain': "[('id', 'in', %s)]" % copied_payslip.ids,
-#            'views': [(treeview_ref and treeview_ref.id or False, 'tree'), (formview_ref and formview_ref.id or False, 'form')],
-#            'context': {}
-#        }
 
     @api.depends('line_ids')
     @api.onchange('line_ids')
@@ -204,3 +190,24 @@ class AccountPayment(models.Model):
             self.destination_account_id = destination_account_id
             return
         super(AccountPayment, self)._compute_destination_account_id()
+
+    @api.multi
+    def button_payslips(self):
+        return {
+            'name': _('Paid Invoices'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'hr.payslip',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', [self.payslip_id.id])],
+        }
+
+    @api.multi
+    def post(self):
+        for rec in self:
+
+            if rec.payslip_id and rec.payslip_id.state != 'done':
+                raise ValidationError(_("The payment cannot be processed because the payslip is not confirmed!"))
+
+        super(AccountPayment, self).post()
