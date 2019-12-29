@@ -58,7 +58,9 @@ class HrPayslip(models.Model):
                 raise ValidationError(_("The payslip cannot be refunded, because it has confirmed payments!"))
 
             if payslip.move_id:
-                raise ValidationError(_("The payslip cannot be refunded, because it has not canceled account move lines!"))
+                payslip.move_id.line_ids.remove_move_reconcile()
+                payslip.move_id.button_cancel()
+                payslip.move_id.unlink()
 
             copied_payslip = payslip
             copied_payslip.set_to_draft()
@@ -209,6 +211,13 @@ class AccountPayment(models.Model):
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', [self.payslip_id.id])],
         }
+
+    @api.multi
+    def cancel(self):
+        super(AccountPayment, self).cancel()
+        for rec in self:
+            if rec.payslip_id and rec.payslip_id.state == 'paid':
+                rec.payslip_id.state = 'done'
 
     @api.multi
     def post(self):
